@@ -2,14 +2,23 @@ import { useState } from 'react'
 import styles from './address.module.css'
 import { Header } from '../../components/header'
 import { Link } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import {addAddress} from '../../redux/user/slice'
 
 export function Address() {
-  const [addressName, setAddressName] = useState("")
-  const [addressNumber, setAddressNumber] = useState("")
+  const dispatch = useDispatch()
+  const {user} = useSelector((rootReducer) => rootReducer.user)
+
+  const [addressName, setAddressName] = useState(user?.address?.location ?? "")
+  const [addressNumber, setAddressNumber] = useState(user?.address?.number ?? "")
 
 
   function handleRegisterAddress(){
     console.log(addressName, addressNumber)
+    dispatch(addAddress({
+      location: addressName,
+      number: addressNumber,
+    }))
   }
 
   return (

@@ -1,11 +1,24 @@
 import styles from './home.module.css'
 import { Header } from '../../components/header'
 import { Link } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
+import { useReducer } from 'react'
+import rootReducer from '../../redux/root-reducer'
+import { deletAddress, fetchUsers, userSlice } from '../../redux/user/slice'
 
 export function Home() {
+  const dispatch = useDispatch()
+  const {user} = useSelector((rootReducer) => rootReducer.user)
+  console.log(user)
 
   function handleDeleteAddress(){
     alert("Endereço deletado com sucesso!")
+
+    dispatch(deletAddress())
+  }
+
+  function handleFetchUsers(){
+    dispatch(fetchUsers())
   }
 
   return (
@@ -27,20 +40,27 @@ export function Home() {
         <main className={styles.content}>
           <div className={styles.message}>
             <h1 className={styles.title}>
-              Olá Visitante, bem vindo!
+              {user ? `Olá ${user.name}, bem vindo!` : "Olá visitante, bem vindo!"}
             </h1>
 
-            <span>Email: ....</span>
+            <span>Email: {user && user.email}</span>
 
-
-            <strong className={styles.addressLabel}>Endereço atual:</strong>
-            <div className={styles.address}>
-              <p>Rua centro, n 123</p>
-              
-              <button onClick={handleDeleteAddress}>Deletar endereço</button>
-            </div>
-
+            {user && user.address && (
+              <>
+                <strong className={styles.addressLabel}>Endereço atual:</strong>
+                <div className={styles.address}>
+                  <p>{user.address.location}, n {user.address.number}</p>
+                  
+                  <button onClick={handleDeleteAddress}>Deletar endereço</button>
+                </div>
+              </>
+            )}
           </div>
+
+          <h2>Lista de usuarios</h2>
+          <br></br>
+          <button onClick={handleFetchUsers}>Buscar usuários</button>
+          <br/>
 
         </main>
       </div>
